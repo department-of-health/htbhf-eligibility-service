@@ -1,6 +1,7 @@
 ---
 applications:
-- name: htbhf-eligibility-service
-  memory: 512M
+- name: htbhf-eligibility-service-((space))
   buildpacks:
   - java_buildpack
+  routes:
+    - route: htbhf-eligibility-service-((space)).apps.internal
