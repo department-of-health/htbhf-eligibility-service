@@ -26,7 +26,10 @@ APP_FULL_PATH="build/libs/$APP_NAME-$APP_VERSION.jar"
 
 if cf app ${APP_FULL_NAME} >/dev/null 2>/dev/null; then
   echo "$APP_FULL_NAME exists, performing blue-green deployment"
+
+  cf push -p ${APP_FULL_PATH} --var suffix=${CF_SPACE}-green
+
 else
   echo "$APP_FULL_NAME does not exist, doing regular deployment"
-  cf push -p ${APP_FULL_PATH} --var space=${CF_SPACE}
+  cf push -p ${APP_FULL_PATH} --var suffix=${CF_SPACE}
 fi
