@@ -12,6 +12,8 @@ if [[ "$TRAVIS_PULL_REQUEST" == "false"  || "$TRAVIS_BRANCH" != "master" ]]; the
    exit
 fi
 
+/bin/bash ci_scripts/install_cf_cli.sh;
+
 APP_FULL_NAME="$APP_NAME-$CF_SPACE"
 
 echo "Logging into cloud foundry with api:$CF_API, org:$CF_ORG, space:$CF_SPACE with user:$CF_USER"
