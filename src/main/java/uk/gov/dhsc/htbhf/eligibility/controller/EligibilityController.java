@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import uk.gov.dhsc.htbhf.eligibility.model.EligibilityRequest;
 import uk.gov.dhsc.htbhf.eligibility.model.EligibilityResponse;
 
+import java.util.Collections;
+
+import static java.util.Collections.singletonList;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static uk.gov.dhsc.htbhf.eligibility.model.Decision.ELIGIBLE;
 
@@ -25,6 +28,7 @@ public class EligibilityController {
     public EligibilityResponse getDecision(@RequestBody EligibilityRequest request) {
         return EligibilityResponse.builder()
                 .decision(ELIGIBLE)
+                .reasons(singletonList("Pregnant"))
                 .build();
     }
 

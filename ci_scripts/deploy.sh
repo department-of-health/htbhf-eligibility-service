@@ -22,14 +22,20 @@ cf login -a ${CF_API} -u ${CF_USER} -p "${CF_PASS}" -s ${CF_SPACE} -o ${CF_ORG}
 echo "Deploying $APP_FULL_NAME to $CF_SPACE"
 
 APP_VERSION=`cat version.properties | grep "version" | cut -d'=' -f2`
-APP_FULL_PATH="build/libs/$APP_NAME-$APP_VERSION.jar"
+APP_PATH="build/libs/$APP_NAME-$APP_VERSION.jar"
 
 if cf app ${APP_FULL_NAME} >/dev/null 2>/dev/null; then
   echo "$APP_FULL_NAME exists, performing blue-green deployment"
 
-  cf push -p ${APP_FULL_PATH} --var suffix=${CF_SPACE}-green
+  cf push -p ${APP_PATH} --var suffix=${CF_SPACE}-green
+  cf map-route ${APP_FULL_NAME}-green ${CF_DOMAIN} --hostname ${APP_FULL_NAME}
+  sleep 5
+  cf unmap-route ${APP_FULL_NAME} ${CF_DOMAIN} --hostname ${APP_FULL_NAME}
+  cf unmap-route ${APP_FULL_NAME}-green ${CF_DOMAIN} --hostname ${APP_FULL_NAME}
+  cf delete -f ${APP_FULL_NAME}
+  cf rename ${APP_FULL_NAME}-green ${APP_FULL_NAME}
 
 else
   echo "$APP_FULL_NAME does not exist, doing regular deployment"
-  cf push -p ${APP_FULL_PATH} --var suffix=${CF_SPACE}
+  cf push -p ${APP_PATH} --var suffix=${CF_SPACE}
 fi
