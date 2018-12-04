@@ -4,6 +4,8 @@
 set -e
 
 echo "Installing cf cli"
-wget "https://cli.run.pivotal.io/stable?release=debian64&source=github" -qO cf.tgz && tar -zxvf cf.tgz && rm cf.tgz
-export PATH="$PATH:."
+mkdir -p bin/
+cd bin
+wget "https://cli.run.pivotal.io/stable?release=linux64-binary&source=github" -q -O cf.tgz && tar -zxvf cf.tgz && rm cf.tgz
 cf --version
+cd ..
