@@ -1,0 +1,77 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+plugins {
+    id 'com.github.kt3k.coveralls' version '2.8.2'
+    id 'io.franzbecker.gradle-lombok' version '1.14'
+    id "org.owasp.dependencycheck" version "4.0.0.1"
+    id "com.github.spotbugs" version "1.6.5"
+    id 'pmd'
+    id 'checkstyle'
+}
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'jacoco'
+
+
+lombok {
+    version = '1.18.4'
+    sha256 = ""
+}
+
+group = 'uk.gov.dhsc.htbhf'
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation "org.spockframework:spock-core:1.2-groovy-2.4"
+    testImplementation "org.spockframework:spock-spring:${spockVersion}"
+
+}
+
+test {
+    reports {
+        junitXml.enabled = false
+        html.enabled = true
+    }
+}
+tasks.withType(com.github.spotbugs.SpotBugsTask) {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+
+checkstyle {
+    toolVersion "8.15"
+}
+
+jacoco {
+    toolVersion = "0.8.2"
+}
+jacocoTestReport {
+    reports {
+        xml.enabled = true // coveralls plugin depends on xml format report
+        html.enabled = true
+    }
+}
+
+// TODO run javadoc on delomboked code to prevent errors: https://github.com/franzbecker/gradle-lombok#delombok-support
+javadoc {
+    enabled = false
+}
