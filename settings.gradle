@@ -1,4 +1,4 @@
-rootProject.name = 'htbhf-eligibility-service'
-include "htbhf-eligibility-service-api"
+rootProject.name = 'htbhf-eligibility-service-parent'
+include "htbhf-eligibility-service"
 
-project(":htbhf-eligibility-service-api").projectDir = file("api")
+project(":htbhf-eligibility-service").projectDir = file("api")
