@@ -36,6 +36,20 @@ if [[ "$TRAVIS_PULL_REQUEST" == "false"  || "$TRAVIS_BRANCH" != "master" ]]; the
    exit
 fi
 
+check_variable_is_set(){
+    if [[ -z ${!1} ]]; then
+        echo "$1 must be set and non empty"
+        exit 1
+    fi
+}
+ # check necessary environment variables are set and not empty
+check_variable_is_set CF_SPACE
+check_variable_is_set CF_API
+check_variable_is_set CF_ORG
+check_variable_is_set CF_USER
+check_variable_is_set CF_PASS
+check_variable_is_set CF_DOMAIN
+
 /bin/bash ci_scripts/install_cf_cli.sh;
 
 APP_FULL_NAME="$APP_NAME-$CF_SPACE"
