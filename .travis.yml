@@ -21,7 +21,7 @@ deploy:
 
 # create coverage reports for the master branch only
 after_success:
-- test $TRAVIS_BRANCH = "master" && ./gradlew jacocoTestReport :htbhf-eligibility-test:coveralls copyAdditionalGithubPages
+- test $TRAVIS_BRANCH = "master" && ./gradlew jacocoTestReport :htbhf-eligibility-service:coveralls copyAdditionalGithubPages
 
 #don't build tags
 # note that we might want to consider only building on master
@@ -32,7 +32,7 @@ branches:
 #Build and perform release (if needed)
 # note that we can't restart failed builds in Travis as the shipkit publishing step will fail if it has already run for that version. Must create a new commit.
 script:
-- ./gradlew build -s && ./ci_scripts/deploy.sh ./gradlew ciPerformRelease -s
+- ./gradlew build -s && ./ci_scripts/deploy.sh && ./gradlew ciPerformRelease -s
 
 env:
   global:
