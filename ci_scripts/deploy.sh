@@ -29,9 +29,9 @@ if cf app ${APP_FULL_NAME} >/dev/null 2>/dev/null; then
 
   cf push -p ${APP_PATH} --var suffix=${CF_SPACE}-green
   cf map-route ${APP_FULL_NAME}-green ${CF_DOMAIN} --hostname ${APP_FULL_NAME}
-  sleep 5
   cf unmap-route ${APP_FULL_NAME} ${CF_DOMAIN} --hostname ${APP_FULL_NAME}
-  cf unmap-route ${APP_FULL_NAME}-green ${CF_DOMAIN} --hostname ${APP_FULL_NAME}
+  cf unmap-route ${APP_FULL_NAME}-green ${CF_DOMAIN} --hostname ${APP_FULL_NAME}-green
+  cf delete-route -f ${CF_DOMAIN} --hostname ${APP_FULL_NAME}-green
   cf delete -f ${APP_FULL_NAME}
   cf rename ${APP_FULL_NAME}-green ${APP_FULL_NAME}
 
