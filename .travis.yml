@@ -35,5 +35,6 @@ script:
 - ./gradlew build -s && ./ci_scripts/deploy.sh ./gradlew ciPerformRelease -s
 
 env:
-  - APP_NAME=htbhf-eligibility-service
-  - CF_DOMAIN=apps.internal
+  global:
+    - APP_NAME=htbhf-eligibility-service
+    - CF_DOMAIN=apps.internal
