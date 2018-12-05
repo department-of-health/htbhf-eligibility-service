@@ -37,4 +37,4 @@ script:
 env:
   global:
     - APP_NAME=htbhf-eligibility-service
-    - CF_DOMAIN=apps.internal
+    - CF_DOMAIN=london.cloudapps.digital
