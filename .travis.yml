@@ -36,5 +36,6 @@ script:
 
 env:
   global:
+    - APP_LOCATION=api/build/libs
     - APP_NAME=htbhf-eligibility-service
     - CF_DOMAIN=london.cloudapps.digital

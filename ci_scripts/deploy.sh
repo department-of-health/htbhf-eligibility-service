@@ -43,6 +43,8 @@ check_variable_is_set(){
     fi
 }
  # check necessary environment variables are set and not empty
+check_variable_is_set APP_NAME
+check_variable_is_set APP_LOCATION
 check_variable_is_set CF_SPACE
 check_variable_is_set CF_API
 check_variable_is_set CF_ORG
@@ -60,7 +62,7 @@ cf login -a ${CF_API} -u ${CF_USER} -p "${CF_PASS}" -s ${CF_SPACE} -o ${CF_ORG}
 echo "Deploying $APP_FULL_NAME to $CF_SPACE"
 
 APP_VERSION=`cat version.properties | grep "version" | cut -d'=' -f2`
-APP_PATH="build/libs/$APP_NAME-$APP_VERSION.jar"
+APP_PATH="${APP_LOCATION}/$APP_NAME-$APP_VERSION.jar"
 
 if cf app ${APP_FULL_NAME} >/dev/null 2>/dev/null; then
   perform_blue_green_deployment
