@@ -1,5 +1,29 @@
 #!/bin/bash
 
+perform_blue_green_deployment() {
+  echo "$APP_FULL_NAME exists, performing blue-green deployment"
+
+  cf push -p ${APP_PATH} --var suffix=${CF_SPACE}-green
+  cf map-route ${APP_FULL_NAME}-green ${CF_DOMAIN} --hostname ${APP_FULL_NAME}
+  unmap_blue_route
+  unmap_temporary_route
+  cf delete -f ${APP_FULL_NAME}
+  cf rename ${APP_FULL_NAME}-green ${APP_FULL_NAME}
+}
+
+unmap_blue_route() {
+  if cf check-route ${APP_FULL_NAME} ${CF_DOMAIN}; then
+    cf unmap-route ${APP_FULL_NAME} ${CF_DOMAIN} --hostname ${APP_FULL_NAME}
+  fi
+}
+
+unmap_temporary_route() {
+  if cf check-route ${APP_FULL_NAME}-green ${CF_DOMAIN}; then
+    cf unmap-route ${APP_FULL_NAME}-green ${CF_DOMAIN} --hostname ${APP_FULL_NAME}-green
+    cf delete-route -f ${CF_DOMAIN} --hostname ${APP_FULL_NAME}-green
+  fi
+}
+
 # quit at first error
 set -e
 
@@ -25,16 +49,7 @@ APP_VERSION=`cat version.properties | grep "version" | cut -d'=' -f2`
 APP_PATH="build/libs/$APP_NAME-$APP_VERSION.jar"
 
 if cf app ${APP_FULL_NAME} >/dev/null 2>/dev/null; then
-  echo "$APP_FULL_NAME exists, performing blue-green deployment"
-
-  cf push -p ${APP_PATH} --var suffix=${CF_SPACE}-green
-  cf map-route ${APP_FULL_NAME}-green ${CF_DOMAIN} --hostname ${APP_FULL_NAME}
-  cf unmap-route ${APP_FULL_NAME} ${CF_DOMAIN} --hostname ${APP_FULL_NAME}
-  cf unmap-route ${APP_FULL_NAME}-green ${CF_DOMAIN} --hostname ${APP_FULL_NAME}-green
-  cf delete-route -f ${CF_DOMAIN} --hostname ${APP_FULL_NAME}-green
-  cf delete -f ${APP_FULL_NAME}
-  cf rename ${APP_FULL_NAME}-green ${APP_FULL_NAME}
-
+  perform_blue_green_deployment
 else
   echo "$APP_FULL_NAME does not exist, doing regular deployment"
   cf push -p ${APP_PATH} --var suffix=${CF_SPACE}
