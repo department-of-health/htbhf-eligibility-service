@@ -28,7 +28,6 @@ public class EligibilityController {
     public EligibilityResponse getDecision(@RequestBody EligibilityRequest request) {
         return EligibilityResponse.builder()
                 .decision(ELIGIBLE)
-                .reasons(singletonList("Pregnant"))
                 .build();
     }
 
