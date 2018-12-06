@@ -106,5 +106,3 @@ task copyReports() {
         into 'build/reports/integration'
     }
 }
-
-

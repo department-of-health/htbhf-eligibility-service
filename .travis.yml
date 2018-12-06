@@ -21,7 +21,7 @@ deploy:
 
 # create coverage reports for the master branch only
 after_success:
-- test $TRAVIS_BRANCH = "master" && ./gradlew jacocoTestReport :htbhf-eligibility-service:coveralls copyReports
+- test $TRAVIS_BRANCH = "master" && test $TRAVIS_PULL_REQUEST = "false" && ./gradlew jacocoTestReport :htbhf-eligibility-service:coveralls copyReports
 
 #don't build tags
 # note that we might want to consider only building on master

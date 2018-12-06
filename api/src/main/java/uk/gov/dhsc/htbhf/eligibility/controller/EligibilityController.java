@@ -1,5 +1,6 @@
 package uk.gov.dhsc.htbhf.eligibility.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,7 +14,12 @@ import static java.util.Collections.singletonList;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static uk.gov.dhsc.htbhf.eligibility.model.Decision.ELIGIBLE;
 
+/**
+ * Responsible for obtaining a decision on eligibility from downstream services, sending the application to the claimant service
+ * and returning the eligibility result.
+ */
 @Controller
+@Slf4j
 public class EligibilityController {
 
     /**

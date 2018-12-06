@@ -3,6 +3,8 @@
 !gradle/wrapper/gradle-wrapper.jar
 gradle.properties
 
+manifest/src
+
 ### STS ###
 .apt_generated
 .classpath
