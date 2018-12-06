@@ -1,14 +1,30 @@
 #!/bin/bash
 
+remove_route() {
+  if cf check-route $1 $2 | grep "does exist"; then
+    cf unmap-route $3 $2 --hostname $1
+    cf delete-route -f $2 --hostname $1
+  fi
+}
+
 perform_first_time_deployment() {
   echo "$APP_FULL_NAME does not exist, doing regular deployment"
-#  cf push -p ${APP_PATH} --var suffix=${CF_SPACE}
-#  ROUTE=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 16 | head -n 1)
-#  cf map-route ${APP_FULL_NAME} ${CF_PUBLIC_DOMAIN} --hostname ${ROUTE}
 
-#  (./ci_scripts/integration_tests.sh ${ROUTE}.${CF_PUBLIC_DOMAIN})
-  RESULT=$(./ci_scripts/integration_tests.sh localhost:8080)
-  echo "RESULT=${RESULT}"
+  cf push -p ${APP_PATH} --var suffix=${CF_SPACE}
+
+  ROUTE=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 16 | head -n 1)
+  cf map-route ${APP_FULL_NAME} ${CF_PUBLIC_DOMAIN} --hostname ${ROUTE}
+
+  (./ci_scripts/integration_tests.sh ${ROUTE}.${CF_PUBLIC_DOMAIN})
+  RESULT=$?
+
+  remove_route ${ROUTE} ${CF_PUBLIC_DOMAIN} ${APP_FULL_NAME}
+
+  if [[ ${RESULT} != 0 ]]; then
+    echo "Tests failed, rolling back deployment of $APP_FULL_NAME"
+    cf delete -f -r ${APP_FULL_NAME}
+    exit 1
+  fi
 }
 
 perform_blue_green_deployment() {
@@ -17,7 +33,7 @@ perform_blue_green_deployment() {
   cf push -p ${APP_PATH} --var suffix=${CF_SPACE}-green
   cf map-route ${APP_FULL_NAME}-green ${CF_DOMAIN} --hostname ${APP_FULL_NAME}
   unmap_blue_route
-  unmap_temporary_route
+  remove_route ${APP_FULL_NAME}-green ${CF_DOMAIN} ${APP_FULL_NAME}-green
   cf delete -f ${APP_FULL_NAME}
   cf rename ${APP_FULL_NAME}-green ${APP_FULL_NAME}
 }
@@ -27,16 +43,6 @@ unmap_blue_route() {
     cf unmap-route ${APP_FULL_NAME} ${CF_DOMAIN} --hostname ${APP_FULL_NAME}
   fi
 }
-
-unmap_temporary_route() {
-  if cf check-route ${APP_FULL_NAME}-green ${CF_DOMAIN}; then
-    cf unmap-route ${APP_FULL_NAME}-green ${CF_DOMAIN} --hostname ${APP_FULL_NAME}-green
-    cf delete-route -f ${CF_DOMAIN} --hostname ${APP_FULL_NAME}-green
-  fi
-}
-
-# quit at first error
-set -e
 
 export PATH=$PATH:./bin
 

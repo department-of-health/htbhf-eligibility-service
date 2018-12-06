@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# quit at first error
-set -e
-
 echo "Installing cf cli"
 if [[ ! -e bin/cf ]]; then
     mkdir -p bin/

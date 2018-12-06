@@ -31,7 +31,7 @@ class NewApplicantSpec extends Specification {
 
         then: "The response should indicate that the applicant is eligible"
         response.statusCode() == 200
-        JSONAssert.assertEquals('{"decision":"ELIGIBL"}', response.body().asString(), JSONCompareMode.LENIENT)
+        JSONAssert.assertEquals('{"decision":"ELIGIBLE"}', response.body().asString(), JSONCompareMode.LENIENT)
     }
 
 }
