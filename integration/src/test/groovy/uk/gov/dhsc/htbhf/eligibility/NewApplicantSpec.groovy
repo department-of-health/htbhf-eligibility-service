@@ -16,7 +16,7 @@ class NewApplicantSpec extends Specification {
     def request() {
         given()
                 .config(newConfig().logConfig(logConfig().enableLoggingOfRequestAndResponseIfValidationFails()))
-                .baseUri(System.getenv("BASE_URL"))
+                .baseUri(System.getProperty("base_url"))
                 .contentType("application/json")
     }
 
@@ -31,7 +31,7 @@ class NewApplicantSpec extends Specification {
 
         then: "The response should indicate that the applicant is eligible"
         response.statusCode() == 200
-        JSONAssert.assertEquals('{"decision":"ELIGIBLE"}', response.body().asString(), JSONCompareMode.LENIENT)
+        JSONAssert.assertEquals('{"decision":"ELIGIBL"}', response.body().asString(), JSONCompareMode.LENIENT)
     }
 
 }

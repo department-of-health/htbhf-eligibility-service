@@ -1,5 +1,16 @@
 #!/bin/bash
 
+perform_first_time_deployment() {
+  echo "$APP_FULL_NAME does not exist, doing regular deployment"
+#  cf push -p ${APP_PATH} --var suffix=${CF_SPACE}
+#  ROUTE=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 16 | head -n 1)
+#  cf map-route ${APP_FULL_NAME} ${CF_PUBLIC_DOMAIN} --hostname ${ROUTE}
+
+#  (./ci_scripts/integration_tests.sh ${ROUTE}.${CF_PUBLIC_DOMAIN})
+  RESULT=$(./ci_scripts/integration_tests.sh localhost:8080)
+  echo "RESULT=${RESULT}"
+}
+
 perform_blue_green_deployment() {
   echo "$APP_FULL_NAME exists, performing blue-green deployment"
 
@@ -51,6 +62,7 @@ check_variable_is_set CF_ORG
 check_variable_is_set CF_USER
 check_variable_is_set CF_PASS
 check_variable_is_set CF_DOMAIN
+check_variable_is_set CF_PUBLIC_DOMAIN
 
 /bin/bash ci_scripts/install_cf_cli.sh;
 
@@ -64,9 +76,9 @@ echo "Deploying $APP_FULL_NAME to $CF_SPACE"
 APP_VERSION=`cat version.properties | grep "version" | cut -d'=' -f2`
 APP_PATH="${APP_LOCATION}/$APP_NAME-$APP_VERSION.jar"
 
+# if the app already exists, perform a blue green deployment, if not then a regular deployment
 if cf app ${APP_FULL_NAME} >/dev/null 2>/dev/null; then
   perform_blue_green_deployment
 else
-  echo "$APP_FULL_NAME does not exist, doing regular deployment"
-  cf push -p ${APP_PATH} --var suffix=${CF_SPACE}
+  perform_first_time_deployment
 fi

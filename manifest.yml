@@ -5,3 +5,5 @@ applications:
   - java_buildpack
   health-check-type: http
   health-check-http-endpoint: /actuator/health
+  routes:
+    - route: htbhf-eligibility-service-((suffix)).apps.internal

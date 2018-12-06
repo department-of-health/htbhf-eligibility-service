@@ -20,6 +20,7 @@ dependencies {
 }
 
 test {
+    systemProperty "base_url", System.getProperty("base_url")
     reports {
         junitXml.enabled = false
         html.enabled = true
