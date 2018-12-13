@@ -42,5 +42,5 @@ env:
   global:
     - APP_NAME=htbhf-eligibility-service
     - CF_DOMAIN=apps.internal
-    - SMOKE_TESTS=./ci_scripts/smoke_tests.sh
+    - POST_DEPLOYMENT_TESTS=./ci_scripts/smoke_tests.sh
     - BIN_DIR=./bin
